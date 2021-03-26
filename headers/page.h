@@ -1,6 +1,7 @@
 #include <fos.h>
 #include <node.h>
 #include <vector>
+#include <string>
 
 #ifndef PAGE_H
 #define PAGE_H
@@ -18,8 +19,6 @@ DataPage()
         Node* getNodes() {
             return Nodes;
         }
-        //char* toByteArray(void);    
-        //void fromByteArray(char* array);    
     };
 }
 

@@ -2,6 +2,7 @@
 #include <fos.h>
 #include <page.h>
 #include <index.h>
+#include <system.h>
 
 #ifndef FILE_MANAGER_H
 #define FILE_MANAGER_H
@@ -15,6 +16,7 @@ namespace FOS
 			std::string fileName;
 			std::string IndexFile;
 			char* buffer;
+			FOS::System* system;
 	//Getters
 	public:
 		char* getBuffer() 

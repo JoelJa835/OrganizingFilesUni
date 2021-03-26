@@ -22,7 +22,7 @@ namespace FOS
 
 			public:
 
-			std::string toIndexArray(void);
+			char* toIndexArray(void);
 			void fromIndexArray(char* array);
 
 		};

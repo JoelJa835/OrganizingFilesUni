@@ -79,7 +79,12 @@ int FOS::FileManager::FileHandle(FILE* not_used)
 
         //move to top and write info
         fseek(myFile, 0, SEEK_SET);
-        fprintf(myFile,"%i%s",numPages,buffer);
+        int tmp1=numPages;
+        char* tmp=(char*)&tmp1;
+        //sprintf(buffer,"%c%c%c%c%s",(tmp)[0],(tmp)[1],(tmp)[2],(tmp)[3],this->data);
+        fwrite(tmp,sizeof(char),4,myFile);
+        fwrite(buffer,sizeof(char),strlen(buffer)-1,myFile);
+        //fprintf(myFile,"%s",numPages,buffer);
         fclose(myFile);
     return numPages;
     }
@@ -87,38 +92,15 @@ int FOS::FileManager::FileHandle(FILE* not_used)
 int FOS::FileManager::ReadBlock(long int pagePos,FOS::DataPage* Page,FILE* file)
     {
         FILE* myFile=fopen(this->fileName.c_str(),"rb+");
-        //char* buffer=(char*)malloc((RECSIZE)*sizeof(char));
-        std::vector<std::string> buffer;
+        char* buffer=(char*)malloc((PAGE_SIZE)*sizeof(char));
         fseek(myFile,pagePos*PAGE_SIZE,SEEK_SET);
+        fread(buffer,sizeof(char),PAGE_SIZE,myFile);
         for(int j=0;j<SIZEARRAY;j++)
             {
-                //*buffer='\0';
-                char in;
-                std::string buffer_t;
-                for(int j=0;j<28;j++)
-                    {
-                        in=fgetc(myFile);
-                        if(in=='\0')
-                            break;
-                        //printf("%c\n",in);buffer+=in
-                        //sprintf(buffer,"%c",in);
-                        buffer_t+=in;
-                    }
-                    printf("%s\n",buffer_t.c_str());
-                buffer.push_back(buffer_t);
-
-                //printf("%s\n",buffer);
-                Page->getNodes()[j].fromByteArray((char*)buffer[j].c_str());
-                printf("%s\n",buffer[j].c_str());
+                fwrite(&buffer[j*RECSIZE],sizeof(char),RECSIZE,stdout);
             }
-        //if(fread(buffer,sizeof(char),PAGE_SIZE,file)!=PAGE_SIZE)
-            //{
-                //free(buffer);
-                //return 0;
-            //}
-        ////Page->fromByteArray(buffer);
         fclose(myFile);
-        //free(buffer);
+        free(buffer);
     return 1;
     };
 
@@ -127,23 +109,16 @@ int FOS::FileManager::ReadBlock(long int pagePos,FOS::DataPage* Page,FILE* file)
 int FOS::FileManager::WriteBlock(long int pagePos,FOS::DataPage* Page,FILE* not_used)
     {
         FILE* myFile=fopen(this->fileName.c_str(),"rb+");
-        //printf("pos %li\n",pagePos);
-        //printf("size %i\n",PAGE_SIZE);
+        //char* buffer=(char*)malloc((PAGE_SIZE)*sizeof(char));
+        std::string buffer;
         fseek(myFile,pagePos*PAGE_SIZE,SEEK_SET);
-        //if(fwrite(Page->toByteArray(),sizeof(char),PAGE_SIZE,myFile))
         for(int j=0;j<SIZEARRAY;j++)
             {
-                char* to_write=Page->getNodes()[j].toByteArray();
-                int check=(fprintf(myFile,"%s",to_write)<0);
-                int check1;
-                if(strlen(to_write)<28)
-                    check1=!fputc('\0',myFile);
-                if(check & check1)
-                    {
-                        fclose(myFile);
-                        return 0;
-                    }
+                char* tmp=Page->getNodes()[j].toByteArray();
+                for(int j=0;j<RECSIZE;j++)
+                    buffer.push_back(tmp[j]);
             }
+        fwrite(buffer.c_str(),sizeof(char),PAGE_SIZE,myFile);
     fclose(myFile);
     return 1;
     }
