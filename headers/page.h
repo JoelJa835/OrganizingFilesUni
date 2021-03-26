@@ -18,8 +18,8 @@ DataPage()
         Node* getNodes() {
             return Nodes;
         }
-        char* toByteArray(void);    
-        void fromByteArray(char* array);    
+        //char* toByteArray(void);    
+        //void fromByteArray(char* array);    
     };
 }
 

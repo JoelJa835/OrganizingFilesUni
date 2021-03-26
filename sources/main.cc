@@ -25,13 +25,48 @@ int main(int argc,char** argv)
         std::cout<<page->getNodes()[1].getData()<<"\n";
         std::cout<<page->getNodes()[2].getKey()<<"\n";
         std::cout<<page->getNodes()[2].getData()<<"\n";
-        std::cout<<page->getNodes()[3].getKey()<<"\n";
+        spage-td::cout<<page->getNodes()[3].getKey()<<"\n";
         std::cout<<page->getNodes()[3].getData()<<"\n";
 
         FOS::FileManager fs;
         FILE* file;
 
-        fs.CreateFile("./testfile");
-        fs.OpenFile(file,"./testfile");
-        fs.WriteBlock(123,page,file);
+        fs.CreateFile("./testfile","./index");
+        //std::cout<<"Open file returned "<<fs.OpenFile(file,"./testfile")<<"\n";
+        fs.WriteBlock(1,page,file);
+
+        FOS::DataPage* page1=new FOS::DataPage();
+        fs.ReadBlock(1,page1,file);
+
+        
+        std::cout<<page1->getNodes()[0].getKey()<<"\n";
+        std::cout<<page1->getNodes()[0].getData()<<"\n";
+        std::cout<<page1->getNodes()[1].getKey()<<"\n";
+        std::cout<<page1->getNodes()[1].getData()<<"\n";
+        std::cout<<page1->getNodes()[2].getKey()<<"\n";
+        std::cout<<page1->getNodes()[2].getData()<<"\n";
+        std::cout<<page1->getNodes()[3].getKey()<<"\n";
+        std::cout<<page1->getNodes()[3].getData()<<"\n";
+
+        fs.CloseFile(file);
+
+        FOS::IndexDataPage* test=new FOS::IndexDataPage;
+        test->index.push_back({1,2});
+        test->index.push_back({1,2});
+        test->index.push_back({3,2});
+        test->index.push_back({5,1});
+        test->index.push_back({6,7});
+        test->index.push_back({90,1});
+        test->index.push_back({123,0});
+        test->index.push_back({90,1});
+        test->index.push_back({123,0});
+        test->index.push_back({3,2});
+        test->index.push_back({5,1});
+        test->index.push_back({6,7});
+        test->index.push_back({90,1});
+        test->index.push_back({123,0});
+        test->index.push_back({90,1});
+        test->index.push_back({123,0});
+        fs.WriteIndex(0,test,file);
+    return 0;
     }
